@@ -23,7 +23,7 @@ function Login() {
       return handleError("email and password are required");
 
     try {
-      const response = await fetch(`https://backend-webcrafter.onrender.com/auth/login`, {
+      const response = await fetch(`https://backend-genai-93df.onrender.com/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginInfo),
