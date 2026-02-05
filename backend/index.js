@@ -18,7 +18,7 @@ app.get('/ping', (req, res) => {
 app.use(bodyParser.json());
 // app.use(cors());
 app.use(cors({
-    origin: "https://webcrafter-genai.onrender.com", // kaha se req aa rha h
+    origin: "https://web-crafter-genai.onrender.com", // kaha se req aa rha h
     credentials: true
 }))
 app.use('/auth', AuthRouter);
