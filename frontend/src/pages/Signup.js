@@ -28,7 +28,7 @@ function Signup() {
     }
 
     try {
-      const url = `https://backend-webcrafter.onrender.com/auth/signup`;
+      const url = `https://backend-genai-93df.onrender.com/auth/signup`;
       const response = await fetch(url, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
