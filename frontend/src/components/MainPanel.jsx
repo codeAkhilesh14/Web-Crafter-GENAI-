@@ -37,7 +37,7 @@ const MainPanel = ({ loggedInUser }) => {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "http://localhost:8080/api/openai/generate",
+        "https://backend-webcrafter.onrender.com/openai/generate",
         { prompt },
         {
           headers: {

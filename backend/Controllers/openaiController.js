@@ -1,18 +1,80 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+// const { GoogleGenerativeAI } = require("@google/generative-ai");
+// require("dotenv").config();
+
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// const generateCode = async (req, res) => {
+//   const { prompt } = req.body;
+
+//   try {
+//     const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+
+//     const fullPrompt = `
+// You are an expert web developer AI.
+
+// Your task is to generate a fully functional and complete website using HTML, CSS, and JavaScript based on this request: "${prompt}"
+
+// IMPORTANT RULES:
+
+// - Always generate COMPLETE and WORKING code.
+// - Include all UI components, styling, and JavaScript logic.
+// - Never leave placeholders like "write code here".
+// - Use realistic dummy data if needed.
+// - Ensure responsive modern design.
+// - Use clean professional UI/UX.
+
+// STRICT OUTPUT FORMAT:
+
+// Return ONLY code blocks in this order:
+
+// \`\`\`html
+// <!-- Complete HTML code -->
+// \`\`\`
+
+// \`\`\`css
+// /* Complete CSS code */
+// \`\`\`
+
+// \`\`\`js
+// // Complete JavaScript code
+// \`\`\`
+
+// Do not include ANY explanation text outside the code blocks.
+// `;
+
+//     const result = await model.generateContent(fullPrompt);
+
+//     const response = await result.response;
+//     const code = response.text();
+
+//     res.json({ code });
+//   } catch (error) {
+//     console.error("Gemini API Error:", error);
+//     res.status(500).json({ error: "Code generation failed using Gemini API" });
+//   }
+// };
+
+// module.exports = { generateCode };
+
+const { ChatGroq } = require("@langchain/groq");
+const { HumanMessage, SystemMessage } = require("@langchain/core/messages");
+
 require("dotenv").config();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = new ChatGroq({
+  apiKey: process.env.GROQ_API_KEY,
+  model: "llama-3.1-8b-instant",   // completely free and fast
+  temperature: 0.7,
+});
 
 const generateCode = async (req, res) => {
   const { prompt } = req.body;
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-
-    const fullPrompt = `
+    const systemPrompt = `
 You are an expert web developer AI.
 
-Your task is to generate a fully functional and complete website using HTML, CSS, and JavaScript based on this request: "${prompt}"
+Your task is to generate a fully functional and complete website using HTML, CSS, and JavaScript.
 
 IMPORTANT RULES:
 
@@ -42,15 +104,18 @@ Return ONLY code blocks in this order:
 Do not include ANY explanation text outside the code blocks.
 `;
 
-    const result = await model.generateContent(fullPrompt);
+    const response = await model.invoke([
+      new SystemMessage(systemPrompt),
+      new HumanMessage(prompt),
+    ]);
 
-    const response = await result.response;
-    const code = response.text();
+    res.json({ code: response.content });
 
-    res.json({ code });
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    res.status(500).json({ error: "Code generation failed using Gemini API" });
+    console.error("LangChain Groq Error:", error);
+    res.status(500).json({
+      error: "Code generation failed using LangChain + Groq",
+    });
   }
 };
 
